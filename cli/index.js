@@ -9,19 +9,27 @@ const fs = bluebird.promisifyAll(require('fs'));
 const program = require('commander');
 const glob = bluebird.promisify(require('glob'));
 
+const getConfig = require('./get-config');
+
 program
   .command('report')
-  .description('This command will report data to your firebase backend')
+  .description(
+    'This command will report data to your firebase backend, the following commands are optional if you use declare the file .web-reporter.json'
+  )
+  .option(
+    '-g, --glob ',
+    'What files do you want to report, express it as a glob'
+  )
+  .option(
+    '--firebase-api-key ',
+    'Define the Firebase api key to be used in the command'
+  )
+  .option('--firebase-db-url', 'Define the url of your Firebase database')
   .action(async () => {
     try {
-      const config = JSON.parse(
-        fs.readFileSync('./web-reporter.json', 'utf-8')
-      );
+      const config = getConfig('./web-reporter.json');
 
-      if (!config.glob) {
-        console.error('Ups you have to specify the glob of your files');
-        return;
-      }
+      console.log('config parsed: ', config);
 
       const filesToAnalyze = await glob(config.glob);
 
