@@ -6,11 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "bin": {
+    "web-tracker-cli": "./index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "commander": "^2.15.1",
-    "glob": "^7.1.2"
+    "firebase": "^5.0.3",
+    "glob": "^7.1.2",
+    "s": "^0.1.1"
   }
 }
