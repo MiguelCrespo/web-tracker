@@ -1,10 +1,15 @@
 const fs = require('fs');
 
 const mergeFileConfigWithArgs = (fileConfig, args) => {
-  return fileConfig;
+  console.log('Args: ', args);
+  return Object.assign({}, fileConfig, args);
 };
 
 const validateConfig = config => {
+  if (!config.glob) {
+    throw 'Glob is required';
+  }
+
   return config;
 };
 

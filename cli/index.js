@@ -12,37 +12,43 @@ const glob = bluebird.promisify(require('glob'));
 const getConfig = require('./get-config');
 
 program
-  .command('report')
+  .version('1.0.0')
   .description(
     'This command will report data to your firebase backend, the following commands are optional if you use declare the file .web-reporter.json'
   )
   .option(
-    '-g, --glob ',
+    '-g, --glob [path]',
     'What files do you want to report, express it as a glob'
   )
   .option(
     '--firebase-api-key ',
     'Define the Firebase api key to be used in the command'
   )
-  .option('--firebase-db-url', 'Define the url of your Firebase database')
-  .action(async () => {
-    try {
-      const config = getConfig('./web-reporter.json');
+  .option('--firebase-db-url', 'Define the url of your Firebase database');
 
-      console.log('config parsed: ', config);
+const execute = async () => {
+  program.parse(process.argv);
+  try {
+    let args = {};
 
-      const filesToAnalyze = await glob(config.glob);
+    if (program.glob) args.glob = glob;
 
-      const stats = await bluebird.all(
-        filesToAnalyze.map(file => fs.statAsync(file))
-      );
+    const config = getConfig('./web-reporter.json', args);
 
-      console.log('Config: ', filesToAnalyze);
-      console.log('Stats: ', stats);
-      return 0;
-    } catch (e) {
-      console.error('There was an error: ', e);
-    }
-  });
+    console.log('config parsed: ', config);
 
-program.parse(process.argv);
+    const filesToAnalyze = await glob(config.glob, program.glob);
+
+    const stats = await bluebird.all(
+      filesToAnalyze.map(file => fs.statAsync(file))
+    );
+
+    console.log('Config: ', filesToAnalyze);
+    console.log('Stats: ', stats);
+    return 0;
+  } catch (e) {
+    console.error('There was an error: ', e);
+  }
+}
+
+execute();
