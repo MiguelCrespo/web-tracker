@@ -1,3 +1,5 @@
 {
-    "glob": "*.js"
+    "glob": "*.js",
+    "firebaseApiKey": "",
+    "firebaseDbUrl": ""
 }
